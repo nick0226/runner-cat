@@ -43,7 +43,15 @@ class GameViewModel(
     val coinHeight = 80f
     private val screenWidth = 1080f
 
-    fun startGame() {
+    fun dispatch(action: GameAction) {
+        when (action) {
+            is GameAction.StartGame -> handleStartGame()
+            is GameAction.Jump -> handleJump()
+            is GameAction.UpdateGame -> handleUpdateGame()
+        }
+    }
+
+    private fun handleStartGame() {
         state = GameState(
             cat = CatState(),
             collectedCoins = totalCoinsCollected
@@ -52,13 +60,13 @@ class GameViewModel(
         gameLoopJob?.cancel()
         gameLoopJob = viewModelScope.launch {
             while (!state.isGameOver) {
-                updateGame()
+                dispatch(action = GameAction.UpdateGame)
                 delay(16L)
             }
         }
     }
 
-    fun jump() {
+    private fun handleJump() {
         if (!state.cat.isJumping) {
             viewModelScope.launch {
                 val jumpSteps = (jumpDuration / 16L).toInt()
@@ -73,7 +81,7 @@ class GameViewModel(
         }
     }
 
-    private fun updateGame() {
+    private fun handleUpdateGame() {
         frameCounter++
         val newFrame = (frameCounter / 6) % catFrameCount
 

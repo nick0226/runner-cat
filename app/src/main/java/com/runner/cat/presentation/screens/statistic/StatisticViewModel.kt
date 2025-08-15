@@ -14,10 +14,16 @@ class StatisticViewModel(
         private set
 
     init {
-        refreshStats()
+        dispatch(action = StatisticAction.RefreshStats)
     }
 
-    fun refreshStats() {
+    fun dispatch(action: StatisticAction) {
+        when (action) {
+            StatisticAction.RefreshStats -> handleRefreshData()
+        }
+    }
+
+    private fun handleRefreshData() {
         state = StatisticState(
             score = prefs.getInt("best_score", 0),
             collectedCoins = prefs.getInt("coins_collected", 0)

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.runner.cat.R
+import com.runner.cat.presentation.screens.game.GameAction
 import com.runner.cat.presentation.screens.game.GameViewModel
 
 @Composable
@@ -59,7 +60,9 @@ fun GameOverDialog (
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Button(onClick = { viewModel.startGame() }) {
+                    Button(onClick = {
+                        viewModel.dispatch(action = GameAction.StartGame)
+                    }) {
                             Image(
                                 painter = painterResource(R.drawable.play_game),
                                 contentDescription = "Restart",

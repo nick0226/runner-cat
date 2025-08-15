@@ -65,7 +65,9 @@ fun GameScreen(
     val coinWidth = viewModel.run { coinWidth }
     val coinHeight = viewModel.run { coinHeight }
 
-    LaunchedEffect(Unit) { viewModel.startGame() }
+    LaunchedEffect(Unit) {
+        viewModel.dispatch(action = GameAction.StartGame)
+    }
 
     val configuration = LocalConfiguration.current
     val screenWidthPx = configuration.screenWidthDp * configuration.densityDpi / 160f
@@ -84,7 +86,9 @@ fun GameScreen(
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
-                detectTapGestures(onTap = { viewModel.jump() })
+                detectTapGestures(onTap = {
+                    viewModel.dispatch(action = GameAction.Jump)
+                })
             },
         contentAlignment = Alignment.BottomStart
     ) {
@@ -202,7 +206,6 @@ fun GameScreen(
                 }
             }
         }
-
 
         if (state.isGameOver) {
             GameOverDialog(viewModel = viewModel, onNavigateMainScreen)
