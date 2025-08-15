@@ -1,7 +1,12 @@
 package com.runner.cat.presentation.screens.home
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -24,10 +29,9 @@ import com.runner.cat.presentation.screens.rules.RulesScreen
 import com.runner.cat.presentation.screens.statistic.StatisticScreen
 
 @Composable
-fun HomeScaffold(
-    onNavigateToGame: () -> Unit
-) {
+fun HomeScaffold(onNavigateToGame: () -> Unit) {
     val navController = rememberNavController()
+
     Scaffold(
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -37,29 +41,37 @@ fun HomeScaffold(
                 BottomBar.RulesScreen,
                 BottomBar.StatisticScreen,
             )
-            NavigationBar (
-                modifier = Modifier.height(42.dp)
+
+            Column(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.navigationBars)
             ) {
-                screens.forEach { screen ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = screen.iconRes),
-                                contentDescription = null,
-                                tint = Color.Unspecified
-                            )
-                        },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                NavigationBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(42.dp)
+                ) {
+                    screens.forEach { screen ->
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = screen.iconRes),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified
+                                )
+                            },
+                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -70,7 +82,7 @@ fun HomeScaffold(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomBar.MainScreen.route) {
-                MainScreen( onNavigateToGame = onNavigateToGame )
+                MainScreen(onNavigateToGame = onNavigateToGame)
             }
             composable(BottomBar.RulesScreen.route) {
                 RulesScreen()
